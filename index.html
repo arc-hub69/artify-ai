@@ -165,23 +165,33 @@
     <div class="options-menu-item">Option 1</div>
     <div class="options-menu-item">Option 2</div>
     <div class="options-menu-item">Option 3</div>
+    <div class="options-menu-item" id="fill-option">Fill</div>
+    <input type="color" id="color-picker" value="#000000">
   </div>
+
 
   <div class="brush-thickness-bar" id="brush-thickness-bar">
     <input type="range" id="brush-thickness-slider" min="1" max="10" value="5">
   </div>
 
-  <div>
-    <label for="brush-color-picker">Brush Color:</label>
-    <input type="color" id="brush-color-picker" value="#000000">
-  </div>
-<script>
-  const brushColorPicker = document.getElementById('brush-color-picker');
-brushColorPicker.addEventListener('input', function () {
-  context.strokeStyle = brushColorPicker.value;
-});
+<style>
+  #color-picker {
+    margin-bottom: 10px;
+  }
+  
+  .brush-thickness-bar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .brush-thickness-bar input[type="range"] {
+    width: 100%;
+  }
+</style>
 
-</script>  
+
+
+  
 
   <div class="brush-icon" id="brush-icon">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -189,7 +199,7 @@ brushColorPicker.addEventListener('input', function () {
       <path d="M12 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm7-12h2v2h-2zM3 10h2v2H3zm16 0h2v2h-2zM4.757 4.343l1.414 1.414L3.172 9.9l-1.414-1.414zM15.9 3.172l1.414 1.414-4.243 4.243-1.414-1.414zM4.343 19.243l1.414-1.414 4.243 4.243-1.414 1.414zm11.314-2.829l1.414-1.414 1.415 1.414-1.415 1.415zm-2.829 2.829l-1.414 1.414-1.415-1.414 1.415-1.415z" />
     </svg>
   </div>
-  <img src="logo.png"></img>
+ 
 
   <button id="save-button">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -213,8 +223,7 @@ brushColorPicker.addEventListener('input', function () {
   </div>
   
     <!-- ...existing code... -->
-    <input type="color" id="color-picker" value="#000000">
-  </div>
+  
 
   <div>
     <button id="undo-button">Undo</button>
@@ -234,63 +243,150 @@ brushColorPicker.addEventListener('input', function () {
 
   <script>
     const fullscreenButton = document.getElementById('fullscreen-button');
-fullscreenButton.addEventListener('click', function () {
-  if (document.documentElement.requestFullscreen) {
-    document.documentElement.requestFullscreen();
-  } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-    document.documentElement.mozRequestFullScreen();
-  } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-    document.documentElement.webkitRequestFullscreen();
-  } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-    document.documentElement.msRequestFullscreen();
-  }
-});
+    fullscreenButton.addEventListener('click', function () {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+            document.documentElement.msRequestFullscreen();
+        }
+    });
+    const fillOption = document.getElementById('fill-option');
+    // Set initial fill color
+    let fillColor = '#000000';
+    
+    // Function to handle the fill option click event
+    fillOption.addEventListener('click', () => {
+      // Create a color picker input element
+      const colorPicker = document.createElement('input');
+      colorPicker.type = 'color';
+      colorPicker.value = fillColor;
+    
+      // Position the color picker near the fill option
+      const fillOptionRect = fillOption.getBoundingClientRect();
+      colorPicker.style.position = 'absolute';
+      colorPicker.style.top = `${fillOptionRect.bottom}px`;
+      colorPicker.style.left = `${fillOptionRect.left}px`;
+    
+      // Append the color picker to the body
+      document.body.appendChild(colorPicker);
+    
+      // Function to handle color picker change event
+      const handleColorChange = () => {
+        fillColor = colorPicker.value;
+        document.body.removeChild(colorPicker);
+        canvas.addEventListener('click', handleCanvasClick);
+      };
+    
+      // Function to handle canvas click event
+      const handleCanvasClick = (event) => {
+        const canvasRect = canvas.getBoundingClientRect();
+        const x = event.clientX - canvasRect.left;
+        const y = event.clientY - canvasRect.top;
+    
+        // Get the color data of the clicked pixel
+        const imageData = ctx.getImageData(x, y, 1, 1);
+        const pixelData = imageData.data;
+    
+        // Check if the pixel is already filled with the selected color
+        if (
+          pixelData[0] === parseInt(fillColor.substring(1, 3), 16) &&
+          pixelData[1] === parseInt(fillColor.substring(3, 5), 16) &&
+          pixelData[2] === parseInt(fillColor.substring(5, 7), 16)
+        ) {
+          return; // Pixel is already filled with the selected color, no need to fill again
+        }
+    
+        // Create a stack for flood fill algorithm
+        const stack = [];
+        stack.push([x, y]);
+    
+        // Flood fill algorithm
+        while (stack.length > 0) {
+          const [currentX, currentY] = stack.pop();
+    
+          // Check if the current pixel is within the canvas bounds
+          if (
+            currentX >= 0 &&
+            currentX < canvas.width &&
+            currentY >= 0 &&
+            currentY < canvas.height
+          ) {
+            // Get the color data of the current pixel
+            const currentImageData = ctx.getImageData(currentX, currentY, 1, 1);
+            const currentPixelData = currentImageData.data;
+    
+            // Check if the current pixel is the same color as the starting pixel
+            if (
+              currentPixelData[0] === pixelData[0] &&
+              currentPixelData[1] === pixelData[1] &&
+              currentPixelData[2] === pixelData[2]
+            ) {
+              // Set the fill color for the current pixel
+              ctx.fillStyle = fillColor;
+              ctx.fillRect(currentX, currentY, 1, 1);
+    
+              // Add neighboring pixels to the stack for processing
+              stack.push([currentX + 1, currentY]);
+              stack.push([currentX - 1, currentY]);
+              stack.push([currentX, currentY + 1]);
+              stack.push([currentX, currentY - 1]);
+            }
+          }
+        }
+    
+        canvas.removeEventListener('click', handleCanvasClick);
+      };
+    
+      // Add event listener to color picker change event
+      colorPicker.addEventListener('change', handleColorChange, { once: true });
+    });
+    
 
-// Add event listener for brushes menu items
-const brushesMenuItems = document.getElementsByClassName('brushes-menu-item');
+    // Add event listener for brushes menu items
+    const brushesMenuItems = document.getElementsByClassName('brushes-menu-item');
 
-for (let i = 0; i < brushesMenuItems.length; i++) {
-  brushesMenuItems[i].addEventListener('click', function () {
-    const selectedBrush = this.textContent;
-    // Set selected brush logic here
-    console.log(`Selected brush: ${selectedBrush}`);
-    const brushesMenu = document.getElementById('brushes-menu');
-    brushesMenu.style.display = 'none';
+    for (let i = 0; i < brushesMenuItems.length; i++) {
+        brushesMenuItems[i].addEventListener('click', function () {
+            const selectedBrush = this.textContent;
+            // Set selected brush logic here
+            console.log(`Selected brush: ${selectedBrush}`);
+            const brushesMenu = document.getElementById('brushes-menu');
+            brushesMenu.style.display = 'none';
 
-    if (selectedBrush === 'Eraser Brush') {
-      context.globalCompositeOperation = 'destination-out'; // Set the composite operation to erase
-      aiBrushInfo.innerHTML = `AI Brush: <span>Disabled</span>`;
-    } else {
-      context.globalCompositeOperation = 'source-over'; // Reset the composite operation
-      aiBrushInfo.innerHTML = `AI Brush: <span>Enabled</span>`;
+            if (selectedBrush === 'Eraser Brush') {
+                context.globalCompositeOperation = 'destination-out'; // Set the composite operation to erase
+                aiBrushInfo.innerHTML = `AI Brush: <span>Disabled</span>`;
+            } else {
+                context.globalCompositeOperation = 'source-over'; // Reset the composite operation
+                aiBrushInfo.innerHTML = `AI Brush: <span>Enabled</span>`;
+            }
+        });
     }
-  });
-}
-
-
+  
     const brushOpacitySlider = document.getElementById('brush-opacity-slider');
-brushOpacitySlider.addEventListener('input', function () {
-  context.globalAlpha = brushOpacitySlider.value;
-});
-
+    brushOpacitySlider.addEventListener('input', function () {
+        context.globalAlpha = brushOpacitySlider.value;
+    });
 
     const undoButton = document.getElementById('undo-button');
-undoButton.addEventListener('click', function () {
-  // Add logic to undo the last stroke
-});
+    undoButton.addEventListener('click', function () {
+        // Add logic to undo the last stroke
+    });
 
-const clearButton = document.getElementById('clear-button');
-clearButton.addEventListener('click', function () {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-});
-
+    const clearButton = document.getElementById('clear-button');
+    clearButton.addEventListener('click', function () {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    });
 
     const colorPicker = document.getElementById('color-picker');
-colorPicker.addEventListener('input', function () {
-  context.strokeStyle = colorPicker.value;
-});
+    colorPicker.addEventListener('input', function () {
+        context.strokeStyle = colorPicker.value;
+    });
 
-    // Add your JavaScript code here
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
 
@@ -310,76 +406,88 @@ colorPicker.addEventListener('input', function () {
     const aiBrushInfo = document.getElementById('ai-brush-info');
 
     brushThicknessSlider.addEventListener('input', function () {
-      context.lineWidth = brushThicknessSlider.value;
+        context.lineWidth = brushThicknessSlider.value;
     });
 
     brushIcon.addEventListener('click', function () {
-      const brushesMenu = document.getElementById('brushes-menu');
-      brushesMenu.style.display = (brushesMenu.style.display === 'block') ? 'none' : 'block';
+        const brushesMenu = document.getElementById('brushes-menu');
+        brushesMenu.style.display = (brushesMenu.style.display === 'block') ? 'none' : 'block';
     });
 
-   
     for (let i = 0; i < brushesMenuItems.length; i++) {
-      brushesMenuItems[i].addEventListener('click', function () {
-        const selectedBrush = this.textContent;
-        // Set selected brush logic here
-        console.log(`Selected brush: ${selectedBrush}`);
-        const brushesMenu = document.getElementById('brushes-menu');
-        brushesMenu.style.display = 'none';
+        brushesMenuItems[i].addEventListener('click', function () {
+            const selectedBrush = this.textContent;
+            // Set selected brush logic here
+            console.log(`Selected brush: ${selectedBrush}`);
+            const brushesMenu = document.getElementById('brushes-menu');
+            brushesMenu.style.display = 'none';
 
-        if (selectedBrush.startsWith('AI Brush')) {
-          aiBrushInfo.innerHTML = `AI Brush: <span>Enabled</span>`;
-        } else {
-          aiBrushInfo.innerHTML = `AI Brush: <span>Disabled</span>`;
-        }
-      });
+            if (selectedBrush.startsWith('AI Brush')) {
+                aiBrushInfo.innerHTML = `AI Brush: <span>Enabled</span>`;
+            } else {
+                aiBrushInfo.innerHTML = `AI Brush: <span>Disabled</span>`;
+            }
+        });
     }
 
-    // Add event listener for options icon
     const optionsIcon = document.getElementById('options-icon');
     const optionsMenu = document.getElementById('options-menu');
 
     optionsIcon.addEventListener('click', function () {
-      optionsMenu.style.display = (optionsMenu.style.display === 'block') ? 'none' : 'block';
+        optionsMenu.style.display = (optionsMenu.style.display === 'block') ? 'none' : 'block';
     });
 
-    // Add event listener to close options menu when clicking outside
     window.addEventListener('click', function (event) {
-      if (!event.target.matches('#options-icon')) {
-        if (optionsMenu.style.display === 'block') {
-          optionsMenu.style.display = 'none';
+        if (!event.target.matches('#options-icon')) {
+            if (optionsMenu.style.display === 'block') {
+                optionsMenu.style.display = 'none';
+            }
         }
-      }
 
-      if (!event.target.matches('#brush-icon')) {
-        if (brushesMenu.style.display === 'block') {
-          brushesMenu.style.display = 'none';
+        if (!event.target.matches('#brush-icon')) {
+            if (brushesMenu.style.display === 'block') {
+                brushesMenu.style.display = 'none';
+            }
         }
-      }
     });
 
-    // Add event listener to draw on canvas
     let isDrawing = false;
     let lastX = 0;
     let lastY = 0;
 
     function draw(e) {
-      if (!isDrawing) return;
-      context.beginPath();
-      context.moveTo(lastX, lastY);
-      context.lineTo(e.clientX, e.clientY);
-      context.stroke();
-      [lastX, lastY] = [e.clientX, e.clientY];
+        if (!isDrawing) return;
+        context.beginPath();
+        context.moveTo(lastX, lastY);
+
+        if (e.type === 'touchmove') {
+            context.lineTo(e.touches[0].clientX, e.touches[0].clientY);
+            [lastX, lastY] = [e.touches[0].clientX, e.touches[0].clientY];
+        } else {
+            context.lineTo(e.clientX, e.clientY);
+            [lastX, lastY] = [e.clientX, e.clientY];
+        }
+
+        context.stroke();
     }
 
     canvas.addEventListener('mousedown', (e) => {
-      isDrawing = true;
-      [lastX, lastY] = [e.clientX, e.clientY];
+        isDrawing = true;
+        [lastX, lastY] = [e.clientX, e.clientY];
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+        isDrawing = true;
+        [lastX, lastY] = [e.touches[0].clientX, e.touches[0].clientY];
     });
 
     canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchmove', draw);
+
     canvas.addEventListener('mouseup', () => (isDrawing = false));
     canvas.addEventListener('mouseout', () => (isDrawing = false));
-  </script>
+    canvas.addEventListener('touchend', () => (isDrawing = false));
+</script>
+
 </body>
 </html>
