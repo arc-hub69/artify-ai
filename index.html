@@ -1,493 +1,493 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ArtifyAI - Unleash Your Artistic Potential with AI</title>
-  <link rel="icon" type="image/png" href="logo.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    /* Add your CSS code here */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+    <title>Artify AI</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            overflow: hidden;
+        }
 
-    #canvas-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f2f2f2;
-    }
+        #canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
 
-    #canvas {
-      width: 100%;
-      height: 100%;
-    }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            touch-action: none;
+        }
 
-    .toolbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      background-color: #ffffff;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-      z-index: 1;
-    }
+        #sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: 100vh;
+            background-color: #333333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
 
-    .options-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      background-color: #333333;
-      color: #ffffff;
-      border-radius: 50%;
-      cursor: pointer;
-    }
+        #sidebar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    .options-menu {
-      position: fixed;
-      top: 40px;
-      right: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      padding: 10px;
-      background-color: #ffffff;
-      border: 1px solid #cccccc;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      z-index: 1;
-    }
+        #sidebar li {
+            padding: 10px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+        }
 
-    .options-menu-item {
-      margin-bottom: 5px;
-      padding: 5px;
-      background-color: #f2f2f2;
-      color: #333333;
-      cursor: pointer;
-    }
+        #sidebar li img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
 
-    .brush-thickness-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 20px;
-      background-color: #ffffff;
-      box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
-      z-index: 1;
-    }
+        #toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #333333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1;
+        }
 
-    .brush-icon {
-      position: fixed;
-      bottom: 10px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background-color: #ffffff;
-      border: 1px solid #cccccc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 1;
-    }
+        #logo {
+            display: flex;
+            align-items: center;
+            color: #ffffff;
+            font-size: 24px;
+        }
 
-    .brushes-menu {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 200px;
-      background-color: #ffffff;
-      border: 1px solid #cccccc;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-      display: none;
-      z-index: 1;
-    }
+      
 
-    .brushes-menu-item {
-      padding: 10px;
-      background-color: #f2f2f2;
-      color: #333333;
-      cursor: pointer;
-    }
+        #colorPicker {
+            margin-left: 20px;
+        }
 
-    .ai-brush-info {
-      position: fixed;
-      bottom: 70px;
-      right: 30px;
-      color: #999999;
-      font-size: 14px;
-      z-index: 1;
-    }
-
-    .ai-brush-info span {
-      font-weight: bold;
-      color: #333333;
-    }
-     .color-picker {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .thickness-bar {
-      display: inline-block;
-      vertical-align: middle;
-    }
-  </style>
+        #brushSizeInput {
+            width: 1000px;
+        }
+        
+        #colorPicker {
+            width: 40px;
+            height: 40px;
+            appearance: none;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        #colorPicker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        
+        #colorPicker::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        
+        #colorPicker::-moz-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        
+        #colorPicker::-ms-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        
+        #colorPicker::-o-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        
+        .intro-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgb(0, 0, 0), rgb(29, 4, 12));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+          }
+          
+          .logo {
+            max-width: 200px;
+            max-height: 200px;
+          }
+          
+          .intro-section.hide {
+            opacity: 0;
+            pointer-events: none;
+          }
+    </style>
 </head>
 <body>
-  <div id="canvas-container">
-    <canvas id="canvas"></canvas>
-  </div>
+    <div class="intro-section">
+        <img src="logo1.png" alt="Logo" class="logo">
+      </div>
+      <Script>
+        // Function to hide the intro section after a certain duration
+    function hideIntroSection() {
+      const introSection = document.querySelector('.intro-section');
+      introSection.classList.add('hide');
+    }
+    
+    // Hide the intro section after 5 seconds (5000 milliseconds)
+    setTimeout(hideIntroSection, 5000);
+    
+      </Script>
 
-  <div class="toolbar">
-    <div class="options-icon" id="options-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="none" d="M0 0h24v24H0z" />
-        <path d="M12 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm7-12h2v2h-2zM3 10h2v2H3zm16 0h2v2h-2zM4.757 4.343l1.414 1.414L3.172 9.9l-1.414-1.414zM15.9 3.172l1.414 1.414-4.243 4.243-1.414-1.414zM4.343 19.243l1.414-1.414 4.243 4.243-1.414 1.414zm11.314-2.829l1.414-1.414 1.415 1.414-1.415 1.415zm-2.829 2.829l-1.414 1.414-1.415-1.414 1.415-1.415z" />
-      </svg>
+      <style>
+        /* CSS styles for the pop-up */
+        #aiPopup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: none;
+        }
+
+        #aiPopup p {
+            margin: 0;
+        }
+
+        /* CSS styles for the pop-up trigger button */
+        #aiPopupButton {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #f8f8f8;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+    </style>
+
+    <div id="aiPopup">
+        <p>AI Suggestion: Try using shorter strokes for smoother lines.</p>
     </div>
-  </div>
 
-  <div class="options-menu" id="options-menu">
-    <div class="options-menu-item">Option 1</div>
-    <div class="options-menu-item">Option 2</div>
-    <div class="options-menu-item">Option 3</div>
-    <div class="options-menu-item" id="fill-option">Fill</div>
-    <input type="color" id="color-picker" value="#000000">
-  </div>
+    <!-- AI Pop-up Trigger Button -->
+    <div id="aiPopupButton">AI</div>
+<script>
+    const aiPopup = document.getElementById('aiPopup');
+const aiPopupButton = document.getElementById('aiPopupButton');
 
+// Simulated AI responses for demonstration purposes
+const aiResponses = [
+  'Try using shorter strokes for smoother lines.',
+  'Experiment with different color combinations to add depth to your artwork.',
+  'Consider adding more details to make your sketch more vibrant and interesting.',
+  'Explore different shading techniques to create a sense of light and shadow.',
+  'Don\'t be afraid to break the rules and let your creativity flow!',
+  'Try using different brush sizes to add variation and texture to your drawings.'
+];
 
-  <div class="brush-thickness-bar" id="brush-thickness-bar">
-    <input type="range" id="brush-thickness-slider" min="1" max="10" value="5">
-  </div>
+let intervalId; // Stores the interval ID
 
-<style>
-  #color-picker {
-    margin-bottom: 10px;
-  }
-  
-  .brush-thickness-bar {
-    display: flex;
-    align-items: center;
-  }
-  
-  .brush-thickness-bar input[type="range"] {
-    width: 100%;
-  }
-</style>
+function startAIPopup() {
+  showAIPopup(); // Show the initial AI response
 
+  // Schedule the change of AI response every 10 seconds (10000 milliseconds)
+  intervalId = setInterval(showAIPopup, 80000);
+}
 
+function showAIPopup() {
+  const randomIndex = Math.floor(Math.random() * aiResponses.length);
+  aiPopup.textContent = aiResponses[randomIndex];
+  aiPopup.style.display = 'block';
+}
 
-  
+function stopAIPopup() {
+  clearInterval(intervalId); // Stop the interval
+  hideAIPopup(); // Hide the AI pop-up
+}
 
-  <div class="brush-icon" id="brush-icon">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-      <path fill="none" d="M0 0h24v24H0z" />
-      <path d="M12 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm7-12h2v2h-2zM3 10h2v2H3zm16 0h2v2h-2zM4.757 4.343l1.414 1.414L3.172 9.9l-1.414-1.414zM15.9 3.172l1.414 1.414-4.243 4.243-1.414-1.414zM4.343 19.243l1.414-1.414 4.243 4.243-1.414 1.414zm11.314-2.829l1.414-1.414 1.415 1.414-1.415 1.415zm-2.829 2.829l-1.414 1.414-1.415-1.414 1.415-1.415z" />
-    </svg>
-  </div>
- 
+aiPopupButton.addEventListener('click', function () {
+  startAIPopup(); // Start showing AI responses on button click
+});
 
-  <button id="save-button">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <path fill="none" d="M0 0h24v24H0z" />
-    <path d="M12 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm7-12h2v2h-2zM3 10h2v2H3zm16 0h2v2h-2zM4.757 4.343l1.414 1.414L3.172 9.9l-1.414-1.414zM15.9 3.172l1.414 1.414-4.243 4.243-1.414-1.414zM4.343 19.243l1.414-1.414 4.243 4.243-1.414 1.414zm11.314-2.829l1.414-1.414 1.415 1.414-1.415 1.415zm-2.829 2.829l-1.414 1.414-1.415-1.414 1.415-1.415z" />
-  </svg>
-  Save Drawing
-</button>
-<canvas id="drawing-canvas" width="400" height="400"></canvas>
-
-
-  <div class="brushes-menu" id="brushes-menu">
-    <div class="brushes-menu-item">Brush 1</div>
-    <div class="brushes-menu-item">Brush 2</div>
-    <div class="brushes-menu-item">Brush 3</div>
-    <div class="brushes-menu-item">Brush 4</div>
-    <div class="brushes-menu-item">Brush 5</div>
-    <div class="brushes-menu-item">AI Brush 1</div>
-    <div class="brushes-menu-item">AI Brush 2</div>
-    <div class="brushes-menu-item" id="eraser-brush-menu-item">Eraser Brush</div>
-  </div>
-  
-    <!-- ...existing code... -->
-  
-
-  <div>
-    <button id="undo-button">Undo</button>
-    <button id="clear-button">Clear</button>
-  </div>
-</div>
-
-<input type="range" id="brush-opacity-slider" min="0" max="1" step="0.1" value="1">
-</div>
-<div>
-  <button id="fullscreen-button">Fullscreen</button>
-</div>
-</div>
-  <div class="ai-brush-info" id="ai-brush-info">
-    AI Brush: <span>Disabled</span>
-  </div>
-
-  <script>
-    const fullscreenButton = document.getElementById('fullscreen-button');
-    fullscreenButton.addEventListener('click', function () {
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-            document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-            document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-            document.documentElement.msRequestFullscreen();
-        }
-    });
-    const fillOption = document.getElementById('fill-option');
-    // Set initial fill color
-    let fillColor = '#000000';
-    
-    // Function to handle the fill option click event
-    fillOption.addEventListener('click', () => {
-      // Create a color picker input element
-      const colorPicker = document.createElement('input');
-      colorPicker.type = 'color';
-      colorPicker.value = fillColor;
-    
-      // Position the color picker near the fill option
-      const fillOptionRect = fillOption.getBoundingClientRect();
-      colorPicker.style.position = 'absolute';
-      colorPicker.style.top = `${fillOptionRect.bottom}px`;
-      colorPicker.style.left = `${fillOptionRect.left}px`;
-    
-      // Append the color picker to the body
-      document.body.appendChild(colorPicker);
-    
-      // Function to handle color picker change event
-      const handleColorChange = () => {
-        fillColor = colorPicker.value;
-        document.body.removeChild(colorPicker);
-        canvas.addEventListener('click', handleCanvasClick);
-      };
-    
-      // Function to handle canvas click event
-      const handleCanvasClick = (event) => {
-        const canvasRect = canvas.getBoundingClientRect();
-        const x = event.clientX - canvasRect.left;
-        const y = event.clientY - canvasRect.top;
-    
-        // Get the color data of the clicked pixel
-        const imageData = ctx.getImageData(x, y, 1, 1);
-        const pixelData = imageData.data;
-    
-        // Check if the pixel is already filled with the selected color
-        if (
-          pixelData[0] === parseInt(fillColor.substring(1, 3), 16) &&
-          pixelData[1] === parseInt(fillColor.substring(3, 5), 16) &&
-          pixelData[2] === parseInt(fillColor.substring(5, 7), 16)
-        ) {
-          return; // Pixel is already filled with the selected color, no need to fill again
-        }
-    
-        // Create a stack for flood fill algorithm
-        const stack = [];
-        stack.push([x, y]);
-    
-        // Flood fill algorithm
-        while (stack.length > 0) {
-          const [currentX, currentY] = stack.pop();
-    
-          // Check if the current pixel is within the canvas bounds
-          if (
-            currentX >= 0 &&
-            currentX < canvas.width &&
-            currentY >= 0 &&
-            currentY < canvas.height
-          ) {
-            // Get the color data of the current pixel
-            const currentImageData = ctx.getImageData(currentX, currentY, 1, 1);
-            const currentPixelData = currentImageData.data;
-    
-            // Check if the current pixel is the same color as the starting pixel
-            if (
-              currentPixelData[0] === pixelData[0] &&
-              currentPixelData[1] === pixelData[1] &&
-              currentPixelData[2] === pixelData[2]
-            ) {
-              // Set the fill color for the current pixel
-              ctx.fillStyle = fillColor;
-              ctx.fillRect(currentX, currentY, 1, 1);
-    
-              // Add neighboring pixels to the stack for processing
-              stack.push([currentX + 1, currentY]);
-              stack.push([currentX - 1, currentY]);
-              stack.push([currentX, currentY + 1]);
-              stack.push([currentX, currentY - 1]);
-            }
-          }
-        }
-    
-        canvas.removeEventListener('click', handleCanvasClick);
-      };
-    
-      // Add event listener to color picker change event
-      colorPicker.addEventListener('change', handleColorChange, { once: true });
-    });
-    
-
-    // Add event listener for brushes menu items
-    const brushesMenuItems = document.getElementsByClassName('brushes-menu-item');
-
-    for (let i = 0; i < brushesMenuItems.length; i++) {
-        brushesMenuItems[i].addEventListener('click', function () {
-            const selectedBrush = this.textContent;
-            // Set selected brush logic here
-            console.log(`Selected brush: ${selectedBrush}`);
-            const brushesMenu = document.getElementById('brushes-menu');
-            brushesMenu.style.display = 'none';
-
-            if (selectedBrush === 'Eraser Brush') {
-                context.globalCompositeOperation = 'destination-out'; // Set the composite operation to erase
-                aiBrushInfo.innerHTML = `AI Brush: <span>Disabled</span>`;
-            } else {
-                context.globalCompositeOperation = 'source-over'; // Reset the composite operation
-                aiBrushInfo.innerHTML = `AI Brush: <span>Enabled</span>`;
-            }
-        });
-    }
-  
-    const brushOpacitySlider = document.getElementById('brush-opacity-slider');
-    brushOpacitySlider.addEventListener('input', function () {
-        context.globalAlpha = brushOpacitySlider.value;
-    });
-
-    const undoButton = document.getElementById('undo-button');
-    undoButton.addEventListener('click', function () {
-        // Add logic to undo the last stroke
-    });
-
-    const clearButton = document.getElementById('clear-button');
-    clearButton.addEventListener('click', function () {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-    });
-
-    const colorPicker = document.getElementById('color-picker');
-    colorPicker.addEventListener('input', function () {
-        context.strokeStyle = colorPicker.value;
-    });
-
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-
-    // Set canvas size to match window size
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Set default brush properties
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.lineWidth = 5;
-    context.strokeStyle = '#000000';
-
-    // Add event listeners for brush thickness and brush icon
-    const brushThicknessSlider = document.getElementById('brush-thickness-slider');
-    const brushIcon = document.getElementById('brush-icon');
-    const aiBrushInfo = document.getElementById('ai-brush-info');
-
-    brushThicknessSlider.addEventListener('input', function () {
-        context.lineWidth = brushThicknessSlider.value;
-    });
-
-    brushIcon.addEventListener('click', function () {
-        const brushesMenu = document.getElementById('brushes-menu');
-        brushesMenu.style.display = (brushesMenu.style.display === 'block') ? 'none' : 'block';
-    });
-
-    for (let i = 0; i < brushesMenuItems.length; i++) {
-        brushesMenuItems[i].addEventListener('click', function () {
-            const selectedBrush = this.textContent;
-            // Set selected brush logic here
-            console.log(`Selected brush: ${selectedBrush}`);
-            const brushesMenu = document.getElementById('brushes-menu');
-            brushesMenu.style.display = 'none';
-
-            if (selectedBrush.startsWith('AI Brush')) {
-                aiBrushInfo.innerHTML = `AI Brush: <span>Enabled</span>`;
-            } else {
-                aiBrushInfo.innerHTML = `AI Brush: <span>Disabled</span>`;
-            }
-        });
-    }
-
-    const optionsIcon = document.getElementById('options-icon');
-    const optionsMenu = document.getElementById('options-menu');
-
-    optionsIcon.addEventListener('click', function () {
-        optionsMenu.style.display = (optionsMenu.style.display === 'block') ? 'none' : 'block';
-    });
-
-    window.addEventListener('click', function (event) {
-        if (!event.target.matches('#options-icon')) {
-            if (optionsMenu.style.display === 'block') {
-                optionsMenu.style.display = 'none';
-            }
-        }
-
-        if (!event.target.matches('#brush-icon')) {
-            if (brushesMenu.style.display === 'block') {
-                brushesMenu.style.display = 'none';
-            }
-        }
-    });
-
-    let isDrawing = false;
-    let lastX = 0;
-    let lastY = 0;
-
-    function draw(e) {
-        if (!isDrawing) return;
-        context.beginPath();
-        context.moveTo(lastX, lastY);
-
-        if (e.type === 'touchmove') {
-            context.lineTo(e.touches[0].clientX, e.touches[0].clientY);
-            [lastX, lastY] = [e.touches[0].clientX, e.touches[0].clientY];
-        } else {
-            context.lineTo(e.clientX, e.clientY);
-            [lastX, lastY] = [e.clientX, e.clientY];
-        }
-
-        context.stroke();
-    }
-
-    canvas.addEventListener('mousedown', (e) => {
-        isDrawing = true;
-        [lastX, lastY] = [e.clientX, e.clientY];
-    });
-
-    canvas.addEventListener('touchstart', (e) => {
-        isDrawing = true;
-        [lastX, lastY] = [e.touches[0].clientX, e.touches[0].clientY];
-    });
-
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('touchmove', draw);
-
-    canvas.addEventListener('mouseup', () => (isDrawing = false));
-    canvas.addEventListener('mouseout', () => (isDrawing = false));
-    canvas.addEventListener('touchend', () => (isDrawing = false));
+function hideAIPopup() {
+  aiPopup.style.display = 'none';
+}
 </script>
 
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="sidebar">
+        <ul>
+        
+                <li id="save-button">
+                    <img src="save.png" alt="Save">
+                </li>
+           
+            <li><img src="lasso.png" alt="Lasso"></li>
+            <li><img src="filter.png" alt="Filter"></li>
+            <li><img src="eraser.png" alt="Eraser"></li>
+            <li><img src="blur.png" alt="Blur"></li>
+            <li id="bucket-button">
+                <img src="bucket.png" alt="Bucket">
+            </li>
+            <input type="color" id="colorPicker">
+            <li><img src="text.png" alt="Text"></li>
+            <li><img src="eyedropper.png" alt="Eyedropper"></li>
+            <li id="fullscreen-button">
+                <img src="fullscreen.png" alt="Fullscreen Icon">
+            </li>
+            <script>
+                const bucketButton = document.getElementById('bucket-button');
+                
+                const context = canvas.getContext('2d');
+              
+        
+                let fillColor = [255, 0, 0]; // Initial fill color
+        
+                bucketButton.addEventListener('click', function () {
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const pixels = imageData.data;
+        
+                    const clickedX = 0; // Replace with the actual x-coordinate of the click
+                    const clickedY = 0; // Replace with the actual y-coordinate of the click
+        
+                    const targetColor = getPixelColor(clickedX, clickedY, canvas.width, pixels);
+                    const replacementColor = fillColor;
+        
+                    floodFill(clickedX, clickedY, targetColor, replacementColor, canvas.width, canvas.height, pixels);
+        
+                    context.putImageData(imageData, 0, 0);
+                });
+        
+                colorPicker.addEventListener('input', function () {
+                    const hexColor = colorPicker.value;
+                    const rgbColor = hexToRgb(hexColor);
+                    fillColor = [rgbColor.r, rgbColor.g, rgbColor.b];
+                });
+        
+                function getPixelColor(x, y, width, pixels) {
+                    const index = (y * width + x) * 4;
+                    return [pixels[index], pixels[index + 1], pixels[index + 2]];
+                }
+        
+                function floodFill(x, y, targetColor, replacementColor, width, height, pixels) {
+                    const stack = [[x, y]];
+        
+                    while (stack.length > 0) {
+                        const [currentX, currentY] = stack.pop();
+                        const currentColor = getPixelColor(currentX, currentY, width, pixels);
+        
+                        if (
+                            currentX < 0 ||
+                            currentX >= width ||
+                            currentY < 0 ||
+                            currentY >= height ||
+                            !colorsSimilar(currentColor, targetColor)
+                        ) {
+                            continue;
+                        }
+        
+                        setPixelColor(currentX, currentY, width, pixels, replacementColor);
+        
+                        stack.push([currentX + 1, currentY]);
+                        stack.push([currentX - 1, currentY]);
+                        stack.push([currentX, currentY + 1]);
+                        stack.push([currentX, currentY - 1]);
+                    }
+                }
+        
+                function colorsSimilar(color1, color2, tolerance = 10) {
+                    const [r1, g1, b1] = color1;
+                    const [r2, g2, b2] = color2;
+        
+                    const deltaR = Math.abs(r1 - r2);
+                    const deltaG = Math.abs(g1 - g2);
+                    const deltaB = Math.abs(b1 - b2);
+        
+                    return deltaR <= tolerance && deltaG <= tolerance && deltaB <= tolerance;
+                }
+        
+                function setPixelColor(x, y, width, pixels, color) {
+                    const index = (y * width + x) * 4;
+                    const [r, g, b] = color;
+        
+                    pixels[index] = r;
+                    pixels[index + 1] = g;
+                    pixels[index + 2] = b;
+                }
+        
+                function hexToRgb(hex) {
+                    const bigint = parseInt(hex.slice(1), 16);
+                    const r = (bigint >> 16) & 255;
+                    const g = (bigint >> 8) & 255;
+                    const b = bigint & 255;
+                    return { r, g, b };
+                }
+            </script>
+            <script>
+                const fullscreenButton = document.getElementById('fullscreen-button');
+                fullscreenButton.addEventListener('click', function () {
+                    const element = document.documentElement;
+        
+                    if (element.requestFullscreen) {
+                        element.requestFullscreen();
+                    } else if (element.mozRequestFullScreen) { // Firefox
+                        element.mozRequestFullScreen();
+                    } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                        element.webkitRequestFullscreen();
+                    } else if (element.msRequestFullscreen) { // IE/Edge
+                        element.msRequestFullscreen();
+                    }
+                });
+            </script>
+
+            <script>
+                const saveButton = document.getElementById('save-button');
+                saveButton.addEventListener('click', function () {
+                    const canvas = document.getElementById('canvas');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = canvas.toDataURL('image/png');
+                    downloadLink.download = 'ai_Art.png';
+                    downloadLink.click();
+                });
+            </script>
+            
+            </li>
+            
+        </ul>
+    </div>
+    <div id="toolbar">
+        <div id="logo">
+            <img src="logo1.png" alt="Artify AI Logo" width="30" height="30">
+            
+        </div>
+        <input type="range" id="brushSizeInput" min="1" max="20" value="2">
+        <input type="color" id="colorPicker">
+    </div>
+
+    
+
+    <script>
+
+      
+        // Canvas setup
+        const canvasContainer = document.getElementById("canvas-container");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Variables
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Set canvas size based on the container size
+        canvas.width = canvasContainer.clientWidth;
+        canvas.height = canvasContainer.clientHeight;
+
+        // Event listeners
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseup", stopDrawing);
+        canvas.addEventListener("mouseout", stopDrawing);
+        canvas.addEventListener("touchstart", startDrawing);
+        canvas.addEventListener("touchmove", draw);
+        canvas.addEventListener("touchend", stopDrawing);
+        canvas.addEventListener("touchcancel", stopDrawing);
+
+        // Toolbar event listeners
+        const brushSizeInput = document.getElementById("brushSizeInput");
+        brushSizeInput.addEventListener("input", updateBrushSize);
+
+        const colorPicker = document.getElementById("colorPicker");
+        colorPicker.addEventListener("change", updateColor);
+
+        // Functions
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getMousePosition(e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            e.preventDefault();
+
+            const [x, y] = getMousePosition(e);
+
+            // Drawing
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.strokeStyle = colorPicker.value;
+            ctx.lineWidth = brushSizeInput.value;
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.stroke();
+
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function getMousePosition(e) {
+            if (e.touches) {
+                const rect = canvas.getBoundingClientRect();
+                return [e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top];
+            }
+            return [e.offsetX, e.offsetY];
+        }
+
+        function updateBrushSize() {
+            ctx.lineWidth = brushSizeInput.value;
+        }
+
+        function updateColor() {
+            ctx.strokeStyle = colorPicker.value;
+        }
+
+        // Update canvas size when the window is resized
+        window.addEventListener("resize", function () {
+            canvas.width = canvasContainer.clientWidth;
+            canvas.height = canvasContainer.clientHeight;
+        });
+    </script>
 </body>
 </html>
