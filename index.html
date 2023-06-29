@@ -152,6 +152,9 @@
     </style>
 </head>
 <body>
+
+    
+
     <div class="intro-section">
         <img src="logo1.png" alt="Logo" class="logo">
       </div>
@@ -198,6 +201,78 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 9999;
         }
+
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: none;
+            font-family: Arial, sans-serif;
+          }
+          
+          .popup h3 {
+            font-size: 18px;
+            margin: 0 0 10px;
+            color: #444;
+          }
+          
+          #brushList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+          }
+          
+          #brushList li {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+          }
+          
+          #brushList li:hover {
+            background-color: #e0e0e0;
+          }
+          
+          #brushList li:before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 10px;
+            background-color: #444;
+            border-radius: 50%;
+          }
+          
+          #brushList li[data-brush="1"]:before {
+            background-color: #000;
+          }
+          
+          #brushList li[data-brush="2"]:before {
+            background-color: #666;
+          }
+          
+          #brushList li[data-brush="3"]:before {
+            background-color: #999;
+          }
+          
+          #brushList li[data-brush="4"]:before {
+            background-color: #ccc;
+          }
+          
+          #brushList li[data-brush="5"]:before {
+            background-color: #ddd;
+          }
+          
+          
     </style>
 
     <div id="aiPopup">
@@ -259,7 +334,21 @@ function hideAIPopup() {
                     <img src="save.png" alt="Save">
                 </li>
            
-            <li><img src="lasso.png" alt="Lasso"></li>
+                <li>
+                    <img src="brush_icon.png" alt="Brush" id="brushIcon">
+                  </li>
+                  <div id="brushPopup" class="popup">
+                    <h3>Select Brush</h3>
+                    <ul id="brushList">
+                      <li data-brush="1"><img src="brush1.png" alt="Brush 1"></li>
+                      <li data-brush="2"><img src="brush2.png" alt="Brush 2"></li>
+                      <li data-brush="3"><img src="brush3.png" alt="Brush 3"></li>
+                      <li data-brush="4"><img src="brush4.png" alt="Brush 4"></li>
+                      <li data-brush="5"><img src="brush5.png" alt="Brush 5"></li>
+                    </ul>
+                  </div>
+                  
+                  
             <li id="fullscreen-button">
                 <img src="fullscreen.png" alt="Fullscreen Icon">
             </li>
@@ -273,6 +362,43 @@ function hideAIPopup() {
             <li><img src="eyedropper.png" alt="Eyedropper"></li>
             
             <script>
+                const brushIcon = document.getElementById('brushIcon');
+                const brushPopup = document.getElementById('brushPopup');
+                const brushList = document.getElementById('brushList');
+                
+                // Open the brush pop-up when the brush icon is clicked
+                brushIcon.addEventListener('click', function () {
+                  brushPopup.style.display = 'block';
+                });
+                
+                // Close the brush pop-up when a brush is selected
+                brushList.addEventListener('click', function (event) {
+                  const selectedBrush = event.target.dataset.brush;
+                  brushPopup.style.display = 'none';
+                
+                  // Set the brush thickness based on the selected brush
+                  switch (selectedBrush) {
+                    case '1':
+                      brushSizeInput.value = 2;
+                      break;
+                    case '2':
+                      brushSizeInput.value = 4;
+                      break;
+                    case '3':
+                      brushSizeInput.value = 6;
+                      break;
+                    case '4':
+                      brushSizeInput.value = 8;
+                      break;
+                    case '5':
+                      brushSizeInput.value = 10;
+                      break;
+                    default:
+                      brushSizeInput.value = 2;
+                      break;
+                  }
+                });
+                
                 const bucketButton = document.getElementById('bucket-button');
                 
                 const context = canvas.getContext('2d');
@@ -397,7 +523,7 @@ function hideAIPopup() {
             <img src="logo1.png" alt="Artify AI Logo" width="30" height="30">
             
         </div>
-        <input type="range" id="brushSizeInput" min="1" max="20" value="2">
+        <input type="range" id="brushSizeInput" min="1" max="30" value="2">
         <input type="color" id="colorPicker">
     </div>
 
